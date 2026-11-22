@@ -35,6 +35,40 @@ const dayScore = (w: Weather, i: number, activity: Activity, priority = "comfort
 };
 const prettyDate = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "short" });
 
+const MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+function parseTravelQuestion(raw: string): { city: string | null; month: string | null } {
+  const clean = raw.replace(/\s+/g, " ").trim();
+  const lower = clean.toLowerCase();
+  const month = MONTHS.find(name => new RegExp(`\\b${name}\\b`, "i").test(lower)) || null;
+
+  // Prefer explicit travel/visit wording. Stop before the temporal phrase ("in August").
+  const travelTo = clean.match(/\b(?:travel(?:l?ing)?\s+to|trip\s+to|visit(?:ing)?|go(?:ing)?\s+to|heading\s+to)\s+(.+?)(?=\s+(?:in|during|for|next|this|over|on)\b|[?.!,]|$)/i);
+  if (travelTo?.[1]) return { city: travelTo[1].trim(), month };
+
+  // Handle questions such as "Beach weather in Goa?" but never mistake a month for a place.
+  const locationPhrase = clean.match(/\b(?:in|around|at)\s+([a-z][a-z .'-]{1,50}?)(?=\s+(?:next|this|during|over|for|on)\b|[?.!,]|$)/i);
+  if (locationPhrase?.[1] && !MONTHS.includes(locationPhrase[1].trim().toLowerCase())) {
+    return { city: locationPhrase[1].trim(), month };
+  }
+
+  // Handle "Is Jaipur good for sightseeing next week?"
+  let leading = clean.replace(/^(?:what about|is|will|how about|how is|what is|would|can you tell me about)\s+/i, "");
+  leading = leading.split(/\s+(?:good|suitable|looking|weather|forecast|for|next|this|during|over|in)\b/i)[0];
+  leading = leading.replace(/[?.!,]/g, "").trim();
+  if (month && leading.toLowerCase() === month) return { city: null, month };
+  return { city: leading.length > 1 ? leading : null, month };
+}
+
+function monthIsInNext16Days(month: string): boolean {
+  const now = new Date();
+  for (let offset = 0; offset < 16; offset++) {
+    const date = new Date(now);
+    date.setDate(now.getDate() + offset);
+    if (MONTHS[date.getMonth()] === month) return true;
+  }
+  return false;
+}
+
 async function geocodeCity(query: string): Promise<Place | null> {
   const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=8&language=en&format=json`);
   if (!response.ok) throw new Error("City search is temporarily unavailable.");
@@ -100,26 +134,47 @@ export default function TravelAdvisor({ initialCity, unit }: { initialCity?: str
     e.preventDefault();
     const raw = question.trim();
     if (!raw || busy) return;
-    setQuestion(""); setMessages(current => [...current, { role: "user", text: raw }]);
+    setQuestion("");
+    setMessages(current => [...current, { role: "user", text: raw }]);
+
     const lower = raw.toLowerCase();
     if (/best time to visit|best season|when should i visit|climate|throughout the year/.test(lower)) {
-      setMessages(current => [...current, { role: "advisor", text: "I can assess the live forecast for the next 16 days, but I don't yet have historical climate normals or seasonal data. I won't guess the best month or season. Ask me about the coming days instead." }]);
+      setMessages(current => [...current, { role: "advisor", text: "I can assess the live forecast for the next 16 days, but I don't yet have historical climate normals or seasonal data. I won't guess the best time of year. Ask me about a destination within the upcoming forecast window instead." }]);
       return;
     }
-    let chosenActivity: Activity = "sightseeing";
-    if (/beach|swim|coast|sea/.test(lower)) chosenActivity = "beach";
-    else if (/hike|trek|camp|outdoor|adventure/.test(lower)) chosenActivity = "outdoors";
-    else if (/relax|rest|quiet|slow/.test(lower)) chosenActivity = "relaxed";
-    const match = raw.match(/\b(?:in|around|at)\s+([a-z][a-z .'-]{1,35}?)(?:\s+(?:next|this|for|during|over)\b|[?.!,]|$)/i);
-    const leadingCity = raw.replace(/^(?:is|will|what(?:'s| is)?|how(?:'s| is)?|would)\s+/i, "").split(/\s+(?:good|suitable|looking|for|next|this|during|over)\b/i)[0].replace(/[?.!,]/g, "").trim();
-    const city = match?.[1]?.trim() || (result?.place.name && /\b(it|there|this destination|the destination)\b/.test(lower) ? result.place.name : leadingCity);
+
     const unsupported = /\b(flight|hotel|visa|budget|restaurant|itinerary|safety|things to do)\b/.test(lower);
     if (unsupported) {
       setMessages(current => [...current, { role: "advisor", text: "That needs information beyond the weather data available in this first phase. I can currently assess forecast suitability for sightseeing, beach holidays, outdoor activities and relaxed trips. I don't want to invent hotel, flight, visa, safety or attraction advice." }]);
       return;
     }
+
+    let chosenActivity: Activity = "sightseeing";
+    if (/beach|swim|coast|sea/.test(lower)) chosenActivity = "beach";
+    else if (/hike|trek|camp|outdoor|adventure/.test(lower)) chosenActivity = "outdoors";
+    else if (/relax|rest|quiet|slow/.test(lower)) chosenActivity = "relaxed";
+
+    const parsed = parseTravelQuestion(raw);
+    const city = parsed.city || (result?.place.name && /\b(it|there|this destination|the destination)\b/.test(lower) ? result.place.name : null);
+
+    if (!city) {
+      setMessages(current => [...current, { role: "advisor", text: "I couldn't confidently identify the destination in your question. Please tell me the city or destination explicitly—for example, “Is Mumbai suitable for sightseeing next week?”" }]);
+      return;
+    }
+
+    // Do not answer a month-specific travel question with today's weather when that month
+    // is outside the 16-day forecast window.
+    if (parsed.month && !monthIsInNext16Days(parsed.month)) {
+      setMessages(current => [...current, { role: "advisor", text: `I understood your destination as ${city} and your travel month as ${parsed.month[0].toUpperCase()}${parsed.month.slice(1)}. However, SkyRoute currently has only a 16-day forecast and no historical climate data. I can't reliably assess that month yet, so I won't substitute today's weather for your travel dates. I can assess the destination when your dates fall within the forecast window.` }]);
+      return;
+    }
+
     const next = await analyse(city, chosenActivity);
-    if (!next) return;
+    if (!next) {
+      setMessages(current => [...current, { role: "advisor", text: `I couldn't retrieve a reliable forecast for ${city}. Please check the destination spelling or try a nearby recognised city.` }]);
+      return;
+    }
+
     const current = next.weather.current;
     const scores = next.weather.daily.time.map((date, i) => ({ date, score: dayScore(next.weather, i, chosenActivity, priority), i })).sort((a, b) => b.score - a.score);
     const top = scores[0];
@@ -157,4 +212,3 @@ export default function TravelAdvisor({ initialCity, unit }: { initialCity?: str
     <div className="advisor-capabilities"><strong>What Phase 1 can do</strong><span>Assess upcoming weather</span><span>Suggest promising forecast days</span><span>Adjust scoring by trip style</span><span>Explain its limitations</span></div>
   </section>;
 }
-
