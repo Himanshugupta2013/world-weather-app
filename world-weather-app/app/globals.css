@@ -1,228 +1,19 @@
 
 /* =========================================
-   SKYROUTE — VIEWPORT ADAPTIVE LAYOUT
-   Append this block at the END of globals.css
+   SKYROUTE — COMPACT DESKTOP DASHBOARD
+   Optimized for laptop and desktop viewports
    ========================================= */
 
-/* Smoothly adapt the main layout to available space */
-.shell {
-  width: min(1240px, calc(100% - 48px));
-}
+@media (min-width: 901px) {
 
-.topbar {
-  min-height: clamp(58px, 7vh, 76px);
-}
+  /* Use available screen width more efficiently */
+  .shell {
+    width: min(1440px, calc(100% - 48px));
+  }
 
-.view-switch {
-  margin-top: clamp(10px, 2vh, 25px);
-}
-
-.hero,
-.compare-hero {
-  padding-top: clamp(24px, 5vh, 72px);
-  padding-bottom: clamp(16px, 3vh, 34px);
-}
-
-.hero h1,
-.compare-hero h1 {
-  font-size: clamp(38px, 5.2vw, 66px);
-  margin-top: clamp(10px, 2vh, 20px);
-  margin-bottom: clamp(8px, 1.5vh, 15px);
-}
-
-.hero-copy {
-  font-size: clamp(12px, 1.1vw, 15px);
-  line-height: 1.6;
-}
-
-.search-wrap,
-.compare-search-wrap {
-  min-height: clamp(52px, 7vh, 64px);
-  margin-top: clamp(14px, 2.5vh, 30px);
-}
-
-.location-line {
-  margin-top: clamp(16px, 3vh, 42px);
-  margin-bottom: clamp(12px, 2vh, 20px);
-}
-
-.location-line h2 {
-  font-size: clamp(27px, 3vw, 35px);
-}
-
-.current-card {
-  min-height: clamp(190px, 27vh, 250px);
-  padding: clamp(16px, 2.2vh, 25px) clamp(18px, 2.4vw, 28px);
-}
-
-.big-temp {
-  font-size: clamp(52px, 6vw, 76px);
-}
-
-.stat {
-  padding: clamp(12px, 2vh, 18px) clamp(9px, 1.2vw, 13px);
-}
-
-.travel-card {
-  margin-top: clamp(12px, 2vh, 17px);
-  padding: clamp(14px, 2vh, 22px) clamp(16px, 2vw, 25px);
-}
-
-.travel-copy h3 {
-  font-size: clamp(17px, 1.8vw, 21px);
-}
-
-.forecast-section {
-  margin-top: clamp(14px, 2vh, 19px);
-}
-
-/* =========================================
-   DESKTOP — COMPACT VIEWPORT
-   ========================================= */
-
-@media screen and (min-width: 901px) and (max-height: 900px) {
-
+  /* Compact header */
   .topbar {
-    min-height: 58px;
-  }
-
-  .view-switch {
-    margin-top: 10px;
-    margin-bottom: 4px;
-    padding: 4px;
-  }
-
-  .view-switch button {
-    padding: 8px 14px;
-  }
-
-  .hero {
-    padding: 20px 0 12px;
-  }
-
-  .hero h1 {
-    font-size: clamp(38px, 4.5vw, 54px);
-    margin: 9px 0 7px;
-  }
-
-  .hero-copy {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  .search-wrap {
-    min-height: 52px;
-    margin-top: 14px;
-    margin-bottom: 7px;
-  }
-
-  .search-wrap input {
-    height: 34px;
-  }
-
-  .search-btn {
-    min-height: 38px;
-  }
-
-  .search-hint {
-    margin-top: 7px;
-  }
-
-  .location-line {
-    margin-top: 16px;
-    margin-bottom: 12px;
-  }
-
-  .location-line h2 {
-    font-size: 29px;
-  }
-
-  .current-grid {
-    gap: 12px;
-  }
-
-  .current-card {
-    min-height: 190px;
-    padding: 16px 21px 13px;
-  }
-
-  .current-main {
-    padding: 7px 4px 9px;
-  }
-
-  .big-temp {
-    font-size: clamp(52px, 5.2vw, 64px);
-  }
-
-  .condition {
-    font-size: 15px;
-  }
-
-  .feels {
-    font-size: 11px;
-  }
-
-  .current-foot {
-    padding-top: 9px;
-  }
-
-  .stats-card {
-    padding: 7px;
-  }
-
-  .stat {
-    padding: 10px;
-    gap: 10px;
-  }
-
-  .stat strong {
-    font-size: 17px;
-  }
-
-  .travel-card {
-    margin-top: 12px;
-    padding: 13px 18px;
-    gap: 14px;
-  }
-
-  .travel-icon {
-    width: 43px;
-    height: 43px;
-  }
-
-  .travel-copy h3 {
-    margin: 4px 0;
-    font-size: 18px;
-  }
-
-  .travel-copy p {
-    margin-bottom: 4px;
-    font-size: 11px;
-    line-height: 1.5;
-  }
-
-  .score strong {
-    font-size: 29px;
-  }
-
-  .forecast-section {
-    margin-top: 14px;
-    padding: 19px;
-  }
-
-  footer {
-    padding: 15px 0;
-  }
-}
-
-/* =========================================
-   SHORT LAPTOP SCREENS
-   ========================================= */
-
-@media screen and (min-width: 901px) and (max-height: 760px) {
-
-  .topbar {
-    min-height: 52px;
+    min-height: 54px;
   }
 
   .brand {
@@ -234,57 +25,112 @@
     height: 30px;
   }
 
+  /* Compact navigation */
   .view-switch {
-    margin-top: 7px;
-    margin-bottom: 2px;
+    margin: 10px 0 0;
+    padding: 3px;
   }
 
+  .view-switch button {
+    padding: 7px 13px;
+  }
+
+  /* Reduce the large introductory hero */
   .hero {
-    padding: 12px 0 8px;
+    padding: 15px 0 12px;
   }
 
   .hero h1 {
-    font-size: clamp(36px, 4vw, 47px);
-    margin: 6px 0;
+    margin: 5px 0 4px;
+    font-size: clamp(27px, 3vw, 38px);
+    letter-spacing: -1px;
+    line-height: 1.05;
+  }
+
+  .hero .eyebrow {
+    font-size: 9px;
   }
 
   .hero-copy {
     font-size: 11px;
+    line-height: 1.4;
   }
 
   .search-wrap {
-    min-height: 46px;
-    margin-top: 10px;
+    width: min(530px, 100%);
+    min-height: 43px;
+    margin: 10px auto 5px;
+    padding: 4px 6px 4px 13px;
+    border-radius: 11px;
+  }
+
+  .search-wrap input {
+    height: 32px;
+    font-size: 12px;
   }
 
   .search-btn {
-    min-height: 34px;
+    min-height: 33px;
+    padding: 0 13px;
   }
 
   .search-hint {
     margin-top: 5px;
+    font-size: 9px;
   }
 
+  /* Compact destination heading */
   .location-line {
-    margin-top: 11px;
-    margin-bottom: 9px;
+    margin: 12px 0 9px;
+    align-items: center;
   }
 
   .location-line h2 {
-    font-size: 26px;
+    margin: 3px 0;
+    font-size: 25px;
+  }
+
+  .location-line h2 span {
+    font-size: 15px;
+  }
+
+  .location-line p {
+    font-size: 10px;
+  }
+
+  .updated {
+    font-size: 8px;
+  }
+
+  /* Current conditions and statistics */
+  .current-grid {
+    gap: 10px;
+    grid-template-columns: 1.15fr 1fr;
   }
 
   .current-card {
-    min-height: 170px;
-    padding: 12px 17px 10px;
+    min-height: 150px;
+    padding: 13px 18px 10px;
+    border-radius: 15px;
   }
 
   .current-main {
-    padding: 4px;
+    padding: 5px 3px 7px;
   }
 
   .big-temp {
-    font-size: 52px;
+    font-size: 49px;
+    letter-spacing: -3px;
+  }
+
+  .condition {
+    margin-top: 0;
+    font-size: 13px;
+  }
+
+  .feels {
+    margin-top: 3px;
+    font-size: 10px;
   }
 
   .weather-art {
@@ -292,402 +138,36 @@
     height: 65px;
   }
 
-  .stat {
-    padding: 8px;
+  .current-foot {
+    padding-top: 7px;
+    font-size: 9px;
   }
 
-  .stat > svg {
-    width: 19px;
-    height: 19px;
-  }
-
-  .stat small {
+  .card-kicker {
     font-size: 8px;
   }
 
-  .stat strong {
-    font-size: 15px;
-  }
-
-  .travel-card {
-    margin-top: 9px;
-    padding: 10px 15px;
-  }
-
-  .travel-icon {
-    width: 37px;
-    height: 37px;
-  }
-
-  .travel-copy h3 {
-    font-size: 16px;
-  }
-
-  .travel-copy p {
-    font-size: 10px;
-    line-height: 1.4;
-  }
-
-  .score strong {
-    font-size: 25px;
-  }
-}
-
-/* =========================================
-   VERY WIDE DESKTOP SCREENS
-   ========================================= */
-
-@media screen and (min-width: 1500px) {
-
-  .shell {
-    width: min(1360px, calc(100% - 80px));
-  }
-
-  .current-grid {
-    grid-template-columns: 1.4fr 1fr;
-  }
-}
-
-/* =========================================
-   PRESERVE NATURAL MOBILE SCROLLING
-   ========================================= */
-
-@media screen and (max-width: 900px) {
-
-  .shell {
-    min-height: 100vh;
-  }
-
-  .hero,
-  .compare-hero {
-    padding-top: 35px;
-    padding-bottom: 22px;
-  }
-
-  .current-card {
-    min-height: 210px;
-  }
-
-  .travel-card {
-    margin-top: 13px;
-  }
-
-  .forecast-section {
-    margin-top: 16px;
-  }
-}
-
-/* =========================================
-   VIEWPORT ADAPTATION — ACCESSIBILITY
-   ========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-/* =========================================
-   SKYROUTE — VIEWPORT ADAPTIVE LAYOUT
-   Append this block at the END of globals.css
-   ========================================= */
-
-/* Smoothly adapt the main layout to available space */
-.shell {
-  width: min(1240px, calc(100% - 48px));
-}
-
-.topbar {
-  min-height: clamp(58px, 7vh, 76px);
-}
-
-.view-switch {
-  margin-top: clamp(10px, 2vh, 25px);
-}
-
-.hero,
-.compare-hero {
-  padding-top: clamp(24px, 5vh, 72px);
-  padding-bottom: clamp(16px, 3vh, 34px);
-}
-
-.hero h1,
-.compare-hero h1 {
-  font-size: clamp(38px, 5.2vw, 66px);
-  margin-top: clamp(10px, 2vh, 20px);
-  margin-bottom: clamp(8px, 1.5vh, 15px);
-}
-
-.hero-copy {
-  font-size: clamp(12px, 1.1vw, 15px);
-  line-height: 1.6;
-}
-
-.search-wrap,
-.compare-search-wrap {
-  min-height: clamp(52px, 7vh, 64px);
-  margin-top: clamp(14px, 2.5vh, 30px);
-}
-
-.location-line {
-  margin-top: clamp(16px, 3vh, 42px);
-  margin-bottom: clamp(12px, 2vh, 20px);
-}
-
-.location-line h2 {
-  font-size: clamp(27px, 3vw, 35px);
-}
-
-.current-card {
-  min-height: clamp(190px, 27vh, 250px);
-  padding: clamp(16px, 2.2vh, 25px) clamp(18px, 2.4vw, 28px);
-}
-
-.big-temp {
-  font-size: clamp(52px, 6vw, 76px);
-}
-
-.stat {
-  padding: clamp(12px, 2vh, 18px) clamp(9px, 1.2vw, 13px);
-}
-
-.travel-card {
-  margin-top: clamp(12px, 2vh, 17px);
-  padding: clamp(14px, 2vh, 22px) clamp(16px, 2vw, 25px);
-}
-
-.travel-copy h3 {
-  font-size: clamp(17px, 1.8vw, 21px);
-}
-
-.forecast-section {
-  margin-top: clamp(14px, 2vh, 19px);
-}
-
-/* =========================================
-   DESKTOP — COMPACT VIEWPORT
-   ========================================= */
-
-@media screen and (min-width: 901px) and (max-height: 900px) {
-
-  .topbar {
-    min-height: 58px;
-  }
-
-  .view-switch {
-    margin-top: 10px;
-    margin-bottom: 4px;
-    padding: 4px;
-  }
-
-  .view-switch button {
-    padding: 8px 14px;
-  }
-
-  .hero {
-    padding: 20px 0 12px;
-  }
-
-  .hero h1 {
-    font-size: clamp(38px, 4.5vw, 54px);
-    margin: 9px 0 7px;
-  }
-
-  .hero-copy {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  .search-wrap {
-    min-height: 52px;
-    margin-top: 14px;
-    margin-bottom: 7px;
-  }
-
-  .search-wrap input {
-    height: 34px;
-  }
-
-  .search-btn {
-    min-height: 38px;
-  }
-
-  .search-hint {
-    margin-top: 7px;
-  }
-
-  .location-line {
-    margin-top: 16px;
-    margin-bottom: 12px;
-  }
-
-  .location-line h2 {
-    font-size: 29px;
-  }
-
-  .current-grid {
-    gap: 12px;
-  }
-
-  .current-card {
-    min-height: 190px;
-    padding: 16px 21px 13px;
-  }
-
-  .current-main {
-    padding: 7px 4px 9px;
-  }
-
-  .big-temp {
-    font-size: clamp(52px, 5.2vw, 64px);
-  }
-
-  .condition {
-    font-size: 15px;
-  }
-
-  .feels {
-    font-size: 11px;
-  }
-
-  .current-foot {
-    padding-top: 9px;
+  .card-kicker span {
+    padding: 4px 7px;
   }
 
   .stats-card {
     padding: 7px;
+    border-radius: 15px;
   }
 
   .stat {
-    padding: 10px;
-    gap: 10px;
-  }
-
-  .stat strong {
-    font-size: 17px;
-  }
-
-  .travel-card {
-    margin-top: 12px;
-    padding: 13px 18px;
-    gap: 14px;
-  }
-
-  .travel-icon {
-    width: 43px;
-    height: 43px;
-  }
-
-  .travel-copy h3 {
-    margin: 4px 0;
-    font-size: 18px;
-  }
-
-  .travel-copy p {
-    margin-bottom: 4px;
-    font-size: 11px;
-    line-height: 1.5;
-  }
-
-  .score strong {
-    font-size: 29px;
-  }
-
-  .forecast-section {
-    margin-top: 14px;
-    padding: 19px;
-  }
-
-  footer {
-    padding: 15px 0;
-  }
-}
-
-/* =========================================
-   SHORT LAPTOP SCREENS
-   ========================================= */
-
-@media screen and (min-width: 901px) and (max-height: 760px) {
-
-  .topbar {
-    min-height: 52px;
-  }
-
-  .brand {
-    font-size: 19px;
-  }
-
-  .brand-mark {
-    width: 30px;
-    height: 30px;
-  }
-
-  .view-switch {
-    margin-top: 7px;
-    margin-bottom: 2px;
-  }
-
-  .hero {
-    padding: 12px 0 8px;
-  }
-
-  .hero h1 {
-    font-size: clamp(36px, 4vw, 47px);
-    margin: 6px 0;
-  }
-
-  .hero-copy {
-    font-size: 11px;
-  }
-
-  .search-wrap {
-    min-height: 46px;
-    margin-top: 10px;
-  }
-
-  .search-btn {
-    min-height: 34px;
-  }
-
-  .search-hint {
-    margin-top: 5px;
-  }
-
-  .location-line {
-    margin-top: 11px;
-    margin-bottom: 9px;
-  }
-
-  .location-line h2 {
-    font-size: 26px;
-  }
-
-  .current-card {
-    min-height: 170px;
-    padding: 12px 17px 10px;
-  }
-
-  .current-main {
-    padding: 4px;
-  }
-
-  .big-temp {
-    font-size: 52px;
-  }
-
-  .weather-art {
-    width: 65px;
-    height: 65px;
-  }
-
-  .stat {
-    padding: 8px;
+    gap: 9px;
+    padding: 9px 10px;
   }
 
   .stat > svg {
-    width: 19px;
-    height: 19px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .stat div {
+    gap: 3px;
   }
 
   .stat small {
@@ -698,81 +178,275 @@
     font-size: 15px;
   }
 
+  /* Compact travel recommendation */
   .travel-card {
+    gap: 13px;
     margin-top: 9px;
     padding: 10px 15px;
+    border-radius: 14px;
   }
 
   .travel-icon {
     width: 37px;
     height: 37px;
+    border-radius: 10px;
+  }
+
+  .travel-icon svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .travel-copy .eyebrow {
+    font-size: 8px;
   }
 
   .travel-copy h3 {
+    margin: 3px 0;
     font-size: 16px;
   }
 
   .travel-copy p {
+    margin-bottom: 3px;
     font-size: 10px;
     line-height: 1.4;
   }
 
+  .travel-copy small {
+    font-size: 9px;
+  }
+
+  .score {
+    min-width: 65px;
+    padding-left: 12px;
+  }
+
   .score strong {
-    font-size: 25px;
+    font-size: 27px;
+  }
+
+  .score span {
+    font-size: 8px;
+  }
+
+  /* Compact forecast panel */
+  .forecast-section {
+    margin-top: 9px;
+    padding: 11px 14px;
+    border-radius: 14px;
+  }
+
+  .section-heading {
+    margin-bottom: 8px;
+  }
+
+  .section-heading h3 {
+    margin-top: 2px;
+    font-size: 18px;
+  }
+
+  .tabs button {
+    padding: 6px 11px;
+    font-size: 10px;
+  }
+
+  /* Hourly forecast remains horizontally scrollable */
+  .hourly-scroll {
+    gap: 7px;
+    padding-bottom: 3px;
+  }
+
+  .hour-item {
+    min-width: 64px;
+    gap: 5px;
+    padding: 7px 6px;
+    border-radius: 9px;
+  }
+
+  .hour-item > svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .hour-item strong {
+    font-size: 14px;
+  }
+
+  .hour-item small,
+  .hour-time {
+    font-size: 9px;
+  }
+
+  /* 16-day forecast: four columns instead of 16 tall rows */
+  .daily-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px 12px;
+  }
+
+  .day-row {
+    min-height: 34px;
+    grid-template-columns: minmax(0, 1fr) 22px auto;
+    gap: 5px;
+    padding: 5px 6px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+  }
+
+  .day-row > svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .day-name {
+    font-size: 10px;
+  }
+
+  .day-condition,
+  .best-tag {
+    display: none;
+  }
+
+  .day-rain {
+    display: none;
+  }
+
+  .day-temp {
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  /* Daylight information */
+  .daylight-grid {
+    gap: 8px;
+    margin-top: 9px;
+  }
+
+  .mini-card {
+    gap: 9px;
+    padding: 9px 12px;
+    border-radius: 10px;
+  }
+
+  .mini-card > svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mini-card div {
+    gap: 3px;
+  }
+
+  .mini-card small {
+    font-size: 8px;
+  }
+
+  .mini-card strong {
+    font-size: 12px;
+  }
+
+  /* Compact disclaimer and footer */
+  .disclaimer {
+    margin: 8px 0;
+    font-size: 9px;
+    line-height: 1.4;
+  }
+
+  footer {
+    gap: 10px;
+    padding: 10px 0;
+    font-size: 9px;
+  }
+
+  footer .brand {
+    font-size: 14px;
+  }
+
+  footer .brand-mark {
+    width: 24px;
+    height: 24px;
   }
 }
 
 /* =========================================
-   VERY WIDE DESKTOP SCREENS
+   SHORT DESKTOP SCREENS
+   Additional compaction for laptop displays
    ========================================= */
 
-@media screen and (min-width: 1500px) {
+@media (min-width: 901px) and (max-height: 800px) {
 
-  .shell {
-    width: min(1360px, calc(100% - 80px));
+  .topbar {
+    min-height: 46px;
   }
 
-  .current-grid {
-    grid-template-columns: 1.4fr 1fr;
-  }
-}
-
-/* =========================================
-   PRESERVE NATURAL MOBILE SCROLLING
-   ========================================= */
-
-@media screen and (max-width: 900px) {
-
-  .shell {
-    min-height: 100vh;
+  .view-switch {
+    margin-top: 7px;
   }
 
-  .hero,
-  .compare-hero {
-    padding-top: 35px;
-    padding-bottom: 22px;
+  .hero {
+    padding-top: 9px;
+    padding-bottom: 7px;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+  }
+
+  .hero-copy {
+    font-size: 10px;
+  }
+
+  .location-line {
+    margin-top: 8px;
+    margin-bottom: 7px;
   }
 
   .current-card {
-    min-height: 210px;
+    min-height: 135px;
+    padding-top: 10px;
+    padding-bottom: 8px;
   }
 
   .travel-card {
-    margin-top: 13px;
+    margin-top: 7px;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
   .forecast-section {
-    margin-top: 16px;
+    margin-top: 7px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .daylight-grid {
+    margin-top: 7px;
+  }
+
+  .mini-card {
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+  .disclaimer {
+    margin: 5px 0;
+  }
+
+  footer {
+    padding: 7px 0;
   }
 }
 
 /* =========================================
-   VIEWPORT ADAPTATION — ACCESSIBILITY
+   NARROW DESKTOP / TABLET SAFETY
    ========================================= */
 
-@media (prefers-reduced-motion: reduce) {
+@media (min-width: 701px) and (max-width: 1100px) {
+  .daily-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-  html {
-    scroll-behavior: auto;
+  .day-row {
+    grid-template-columns: minmax(0, 1fr) 22px auto;
   }
 }
