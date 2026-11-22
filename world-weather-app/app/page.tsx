@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import TravelAdvisor from "./components/TravelAdvisor";
 import {
   Search, MapPin, CloudSun, Sun, Cloud, CloudRain, CloudSnow, CloudLightning,
   Wind, Droplets, Thermometer, Sunrise, Sunset, Umbrella, CalendarDays,
@@ -55,7 +56,7 @@ export default function Home() {
   const [unit, setUnit] = useState<"c" | "f">("c");
   const [tab, setTab] = useState<"hourly" | "daily">("hourly");
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [view, setView] = useState<"weather" | "compare">("weather");
+  const [view, setView] = useState<"weather" | "compare" | "advisor">("weather");
   const [compareQuery, setCompareQuery] = useState("");
   const [comparePlaces, setComparePlaces] = useState<Place[]>([]);
   const [compareSuggestions, setCompareSuggestions] = useState(false);
@@ -167,6 +168,7 @@ export default function Home() {
       <nav className="view-switch" aria-label="Weather views">
         <button className={view === "weather" ? "selected" : ""} onClick={() => setView("weather")}><CloudSun size={15}/> City forecast</button>
         <button className={view === "compare" ? "selected" : ""} onClick={() => setView("compare")}><ArrowLeftRight size={15}/> Compare destinations</button>
+        <button className={view === "advisor" ? "selected" : ""} onClick={() => setView("advisor")}><Compass size={15}/> AI Travel Advisor</button>
       </nav>
 
       {view === "weather" && <>
@@ -242,6 +244,8 @@ export default function Home() {
       {!weather && !busy && !error && <section className="welcome-card"><div className="welcome-illustration"><CloudSun size={54}/></div><h3>Your next destination starts here.</h3><p>Search for a city to see its current conditions, hourly outlook, 15-day forecast, and the most promising weather window.</p><div className="popular"><span>POPULAR DESTINATIONS</span>{["London", "Dubai", "Singapore", "New York", "Sydney"].map(city => <button key={city} onClick={() => { setQuery(city); findPlaces(city).then(() => {}); }}>{city}</button>)}</div></section>}
 
       </>}
+
+      {view === "advisor" && <TravelAdvisor initialCity={place?.name || ""} unit={unit} />}
 
       {view === "compare" && <section className="compare-page">
         <div className="compare-hero">
