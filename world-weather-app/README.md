@@ -10,6 +10,8 @@ A responsive weather forecast web app built with **Next.js**, ready for GitHub a
 - 16-day daily forecast (today + the next 15 days).
 - Celsius/Fahrenheit display toggle.
 - Simple weather-score comparison to surface the most promising days in the forecast window.
+- Compare 2–5 destinations side by side, including current conditions, humidity, wind, rain, a 7-day outlook and an indicative weather score.
+- Automatically rank shortlisted destinations by their average weather score over the next 7 forecast days.
 - Local timezone, sunrise, sunset, wind and UV index.
 - Responsive desktop and mobile layout.
 
@@ -19,7 +21,7 @@ This starter uses the free [Open-Meteo API](https://open-meteo.com/) and does no
 
 The travel recommendation is intentionally a **short-range forecast comparison**, not a long-term climate or seasonal travel advisor. It scores forecast days using precipitation probability/amount, severe weather codes, wind and broad temperature comfort thresholds. It does not consider airfare, hotel prices, local events, air quality, safety, visa requirements or personal preferences. Forecasts are uncertain, especially further out.
 
-The app requests 16 daily forecast dates: today plus 15 days. The hourly view shows up to 36 future hours.
+The app requests 16 daily forecast dates: today plus 15 days. The hourly view shows up to 36 future hours. Destination comparison uses the first 7 forecast days (including today) and ranks cities using the same transparent heuristic score. The score is an indicative weather comparison, not a guarantee or a complete measure of trip suitability.
 
 ## Run locally
 
