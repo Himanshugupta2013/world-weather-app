@@ -387,3 +387,392 @@
     scroll-behavior: auto;
   }
 }
+
+/* =========================================
+   SKYROUTE — VIEWPORT ADAPTIVE LAYOUT
+   Append this block at the END of globals.css
+   ========================================= */
+
+/* Smoothly adapt the main layout to available space */
+.shell {
+  width: min(1240px, calc(100% - 48px));
+}
+
+.topbar {
+  min-height: clamp(58px, 7vh, 76px);
+}
+
+.view-switch {
+  margin-top: clamp(10px, 2vh, 25px);
+}
+
+.hero,
+.compare-hero {
+  padding-top: clamp(24px, 5vh, 72px);
+  padding-bottom: clamp(16px, 3vh, 34px);
+}
+
+.hero h1,
+.compare-hero h1 {
+  font-size: clamp(38px, 5.2vw, 66px);
+  margin-top: clamp(10px, 2vh, 20px);
+  margin-bottom: clamp(8px, 1.5vh, 15px);
+}
+
+.hero-copy {
+  font-size: clamp(12px, 1.1vw, 15px);
+  line-height: 1.6;
+}
+
+.search-wrap,
+.compare-search-wrap {
+  min-height: clamp(52px, 7vh, 64px);
+  margin-top: clamp(14px, 2.5vh, 30px);
+}
+
+.location-line {
+  margin-top: clamp(16px, 3vh, 42px);
+  margin-bottom: clamp(12px, 2vh, 20px);
+}
+
+.location-line h2 {
+  font-size: clamp(27px, 3vw, 35px);
+}
+
+.current-card {
+  min-height: clamp(190px, 27vh, 250px);
+  padding: clamp(16px, 2.2vh, 25px) clamp(18px, 2.4vw, 28px);
+}
+
+.big-temp {
+  font-size: clamp(52px, 6vw, 76px);
+}
+
+.stat {
+  padding: clamp(12px, 2vh, 18px) clamp(9px, 1.2vw, 13px);
+}
+
+.travel-card {
+  margin-top: clamp(12px, 2vh, 17px);
+  padding: clamp(14px, 2vh, 22px) clamp(16px, 2vw, 25px);
+}
+
+.travel-copy h3 {
+  font-size: clamp(17px, 1.8vw, 21px);
+}
+
+.forecast-section {
+  margin-top: clamp(14px, 2vh, 19px);
+}
+
+/* =========================================
+   DESKTOP — COMPACT VIEWPORT
+   ========================================= */
+
+@media screen and (min-width: 901px) and (max-height: 900px) {
+
+  .topbar {
+    min-height: 58px;
+  }
+
+  .view-switch {
+    margin-top: 10px;
+    margin-bottom: 4px;
+    padding: 4px;
+  }
+
+  .view-switch button {
+    padding: 8px 14px;
+  }
+
+  .hero {
+    padding: 20px 0 12px;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 4.5vw, 54px);
+    margin: 9px 0 7px;
+  }
+
+  .hero-copy {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .search-wrap {
+    min-height: 52px;
+    margin-top: 14px;
+    margin-bottom: 7px;
+  }
+
+  .search-wrap input {
+    height: 34px;
+  }
+
+  .search-btn {
+    min-height: 38px;
+  }
+
+  .search-hint {
+    margin-top: 7px;
+  }
+
+  .location-line {
+    margin-top: 16px;
+    margin-bottom: 12px;
+  }
+
+  .location-line h2 {
+    font-size: 29px;
+  }
+
+  .current-grid {
+    gap: 12px;
+  }
+
+  .current-card {
+    min-height: 190px;
+    padding: 16px 21px 13px;
+  }
+
+  .current-main {
+    padding: 7px 4px 9px;
+  }
+
+  .big-temp {
+    font-size: clamp(52px, 5.2vw, 64px);
+  }
+
+  .condition {
+    font-size: 15px;
+  }
+
+  .feels {
+    font-size: 11px;
+  }
+
+  .current-foot {
+    padding-top: 9px;
+  }
+
+  .stats-card {
+    padding: 7px;
+  }
+
+  .stat {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .stat strong {
+    font-size: 17px;
+  }
+
+  .travel-card {
+    margin-top: 12px;
+    padding: 13px 18px;
+    gap: 14px;
+  }
+
+  .travel-icon {
+    width: 43px;
+    height: 43px;
+  }
+
+  .travel-copy h3 {
+    margin: 4px 0;
+    font-size: 18px;
+  }
+
+  .travel-copy p {
+    margin-bottom: 4px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .score strong {
+    font-size: 29px;
+  }
+
+  .forecast-section {
+    margin-top: 14px;
+    padding: 19px;
+  }
+
+  footer {
+    padding: 15px 0;
+  }
+}
+
+/* =========================================
+   SHORT LAPTOP SCREENS
+   ========================================= */
+
+@media screen and (min-width: 901px) and (max-height: 760px) {
+
+  .topbar {
+    min-height: 52px;
+  }
+
+  .brand {
+    font-size: 19px;
+  }
+
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+  }
+
+  .view-switch {
+    margin-top: 7px;
+    margin-bottom: 2px;
+  }
+
+  .hero {
+    padding: 12px 0 8px;
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 4vw, 47px);
+    margin: 6px 0;
+  }
+
+  .hero-copy {
+    font-size: 11px;
+  }
+
+  .search-wrap {
+    min-height: 46px;
+    margin-top: 10px;
+  }
+
+  .search-btn {
+    min-height: 34px;
+  }
+
+  .search-hint {
+    margin-top: 5px;
+  }
+
+  .location-line {
+    margin-top: 11px;
+    margin-bottom: 9px;
+  }
+
+  .location-line h2 {
+    font-size: 26px;
+  }
+
+  .current-card {
+    min-height: 170px;
+    padding: 12px 17px 10px;
+  }
+
+  .current-main {
+    padding: 4px;
+  }
+
+  .big-temp {
+    font-size: 52px;
+  }
+
+  .weather-art {
+    width: 65px;
+    height: 65px;
+  }
+
+  .stat {
+    padding: 8px;
+  }
+
+  .stat > svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .stat small {
+    font-size: 8px;
+  }
+
+  .stat strong {
+    font-size: 15px;
+  }
+
+  .travel-card {
+    margin-top: 9px;
+    padding: 10px 15px;
+  }
+
+  .travel-icon {
+    width: 37px;
+    height: 37px;
+  }
+
+  .travel-copy h3 {
+    font-size: 16px;
+  }
+
+  .travel-copy p {
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .score strong {
+    font-size: 25px;
+  }
+}
+
+/* =========================================
+   VERY WIDE DESKTOP SCREENS
+   ========================================= */
+
+@media screen and (min-width: 1500px) {
+
+  .shell {
+    width: min(1360px, calc(100% - 80px));
+  }
+
+  .current-grid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+/* =========================================
+   PRESERVE NATURAL MOBILE SCROLLING
+   ========================================= */
+
+@media screen and (max-width: 900px) {
+
+  .shell {
+    min-height: 100vh;
+  }
+
+  .hero,
+  .compare-hero {
+    padding-top: 35px;
+    padding-bottom: 22px;
+  }
+
+  .current-card {
+    min-height: 210px;
+  }
+
+  .travel-card {
+    margin-top: 13px;
+  }
+
+  .forecast-section {
+    margin-top: 16px;
+  }
+}
+
+/* =========================================
+   VIEWPORT ADAPTATION — ACCESSIBILITY
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+}
