@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   Search, MapPin, CloudSun, Sun, Cloud, CloudRain, CloudSnow, CloudLightning,
   Wind, Droplets, Thermometer, Sunrise, Sunset, Umbrella, CalendarDays,
-  Plane, Compass, LoaderCircle, ChevronDown, AlertCircle, Clock3
+  Plane, Compass, LoaderCircle, ChevronDown, AlertCircle, Clock3, Plus, X, Trophy, ArrowLeftRight
 } from "lucide-react";
 
 type Place = { id: number; name: string; country?: string; admin1?: string; latitude: number; longitude: number; timezone?: string };
@@ -55,6 +55,12 @@ export default function Home() {
   const [unit, setUnit] = useState<"c" | "f">("c");
   const [tab, setTab] = useState<"hourly" | "daily">("hourly");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [view, setView] = useState<"weather" | "compare">("weather");
+  const [compareQuery, setCompareQuery] = useState("");
+  const [comparePlaces, setComparePlaces] = useState<Place[]>([]);
+  const [compareSuggestions, setCompareSuggestions] = useState(false);
+  const [comparison, setComparison] = useState<{ place: Place; weather: Weather }[]>([]);
+  const [compareBusy, setCompareBusy] = useState(false);
 
   const temp = (n: number) => `${Math.round(unit === "c" ? n : n * 9 / 5 + 32)}°`;
   const wind = (n: number) => `${Math.round(n * (unit === "c" ? 1 : 0.621371))} ${unit === "c" ? "km/h" : "mph"}`;
@@ -69,19 +75,43 @@ export default function Home() {
     } catch { setPlaces([]); }
   }
 
+  async function fetchWeather(p: Place): Promise<Weather> {
+    const params = new URLSearchParams({
+      latitude: String(p.latitude), longitude: String(p.longitude),
+      current: "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m",
+      hourly: "temperature_2m,apparent_temperature,precipitation_probability,precipitation,relative_humidity_2m,wind_speed_10m,weather_code",
+      daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,sunrise,sunset,uv_index_max",
+      forecast_days: "16", timezone: "auto"
+    });
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+    if (!res.ok) throw new Error(`Could not load the forecast for ${p.name}.`);
+    return res.json();
+  }
+
+  async function addComparisonPlace(p: Place) {
+    if (comparison.some(item => item.place.id === p.id) || comparison.length >= 5) return;
+    setCompareBusy(true); setError(""); setCompareSuggestions(false); setComparePlaces([]); setCompareQuery("");
+    try {
+      const data = await fetchWeather(p);
+      setComparison(current => current.some(item => item.place.id === p.id) ? current : [...current, { place: p, weather: data }]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not load comparison.");
+    } finally { setCompareBusy(false); }
+  }
+
+  async function searchComparePlaces(term: string) {
+    if (term.trim().length < 2) { setComparePlaces([]); return; }
+    try {
+      const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(term)}&count=6&language=en&format=json`);
+      const data = await res.json();
+      setComparePlaces(data.results || []); setCompareSuggestions(true);
+    } catch { setComparePlaces([]); }
+  }
+
   async function loadWeather(p: Place) {
     setBusy(true); setError(""); setPlace(p); setQuery(p.name); setShowSuggestions(false); setPlaces([]);
     try {
-      const params = new URLSearchParams({
-        latitude: String(p.latitude), longitude: String(p.longitude),
-        current: "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m",
-        hourly: "temperature_2m,apparent_temperature,precipitation_probability,precipitation,relative_humidity_2m,wind_speed_10m,weather_code",
-        daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,sunrise,sunset,uv_index_max",
-        forecast_days: "16", timezone: "auto"
-      });
-      const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-      if (!res.ok) throw new Error("Weather service is temporarily unavailable. Please try again.");
-      const data = await res.json();
+      const data = await fetchWeather(p);
       setWeather(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load weather.");
@@ -94,6 +124,16 @@ export default function Home() {
     const t = setTimeout(() => { if (query.trim().length >= 2 && query !== place?.name) findPlaces(query); }, 350);
     return () => clearTimeout(t);
   }, [query]);
+
+  useEffect(() => {
+    const t = setTimeout(() => { if (compareQuery.trim().length >= 2) searchComparePlaces(compareQuery); }, 350);
+    return () => clearTimeout(t);
+  }, [compareQuery]);
+
+  const comparisonRanked = useMemo(() => comparison.map(item => {
+    const scores = item.weather.daily.time.slice(0, 7).map((_, i) => scoreDay(item.weather, i));
+    return { ...item, averageScore: Math.round(scores.reduce((a, b) => a + b, 0) / Math.max(scores.length, 1)), bestScore: Math.max(...scores) };
+  }).sort((a, b) => b.averageScore - a.averageScore), [comparison]);
 
   const bestDays = useMemo(() => {
     if (!weather) return [];
@@ -124,6 +164,12 @@ export default function Home() {
         <button className="unit-toggle" onClick={() => setUnit(unit === "c" ? "f" : "c")}>{unit === "c" ? "°C" : "°F"} <ChevronDown size={14}/></button>
       </header>
 
+      <nav className="view-switch" aria-label="Weather views">
+        <button className={view === "weather" ? "selected" : ""} onClick={() => setView("weather")}><CloudSun size={15}/> City forecast</button>
+        <button className={view === "compare" ? "selected" : ""} onClick={() => setView("compare")}><ArrowLeftRight size={15}/> Compare destinations</button>
+      </nav>
+
+      {view === "weather" && <>
       <section className="hero">
         <div className="eyebrow"><Compass size={14}/> YOUR WORLD, AT A GLANCE</div>
         <h1>Go where the weather<br/><span>moves you.</span></h1>
@@ -194,6 +240,43 @@ export default function Home() {
       </>}
 
       {!weather && !busy && !error && <section className="welcome-card"><div className="welcome-illustration"><CloudSun size={54}/></div><h3>Your next destination starts here.</h3><p>Search for a city to see its current conditions, hourly outlook, 15-day forecast, and the most promising weather window.</p><div className="popular"><span>POPULAR DESTINATIONS</span>{["London", "Dubai", "Singapore", "New York", "Sydney"].map(city => <button key={city} onClick={() => { setQuery(city); findPlaces(city).then(() => {}); }}>{city}</button>)}</div></section>}
+
+      </>}
+
+      {view === "compare" && <section className="compare-page">
+        <div className="compare-hero">
+          <div className="eyebrow"><ArrowLeftRight size={14}/> MAKE THE WEATHER PART OF YOUR PLAN</div>
+          <h1>Two cities. One<br/><span>better decision.</span></h1>
+          <p className="hero-copy">Compare live conditions and the next 7 days across up to five destinations.</p>
+          <div className="compare-search-wrap">
+            <MapPin size={18}/>
+            <input value={compareQuery} onChange={e => setCompareQuery(e.target.value)} onFocus={() => comparePlaces.length && setCompareSuggestions(true)} onKeyDown={e => { if (e.key === "Enter" && comparePlaces[0]) { e.preventDefault(); addComparisonPlace(comparePlaces[0]); } }} placeholder="Add a city to compare…" aria-label="Add city to comparison"/>
+            <span className="city-count">{comparison.length}/5 CITIES</span>
+            {compareSuggestions && comparePlaces.length > 0 && <div className="suggestions">{comparePlaces.map(p => <button type="button" key={`${p.id}-${p.latitude}`} onClick={() => addComparisonPlace(p)}><MapPin size={15}/><span>{p.name}<small>{[p.admin1, p.country].filter(Boolean).join(", ")}</small></span></button>)}</div>}
+          </div>
+          <div className="search-hint">Add at least two cities · Search worldwide · Compare up to five</div>
+        </div>
+        {compareBusy && <div className="loading"><LoaderCircle className="spin" size={22}/> Loading destination forecast…</div>}
+        {error && <div className="error"><AlertCircle size={18}/>{error}</div>}
+        {comparison.length === 0 && !compareBusy && <div className="welcome-card compare-empty"><div className="welcome-illustration"><ArrowLeftRight size={48}/></div><h3>Your destination shortlist starts here.</h3><p>Add two or more cities above to compare their weather side by side. Try these popular destinations:</p><div className="popular">{["Dubai", "Singapore", "Bangkok", "London", "Bali"].map(city => <button key={city} onClick={() => { setCompareQuery(city); searchComparePlaces(city); }}>{city}</button>)}</div></div>}
+        {comparison.length > 0 && <>
+          <div className="compare-toolbar"><div><div className="eyebrow">DESTINATION SHORTLIST</div><h2>{comparison.length} {comparison.length === 1 ? "destination" : "destinations"} compared</h2></div><button className="clear-btn" onClick={() => setComparison([])}>Clear all</button></div>
+          {comparison.length < 2 && <div className="compare-tip"><Plus size={16}/> Add at least one more city to see which destination has the better forecast.</div>}
+          {comparison.length >= 2 && <div className="winner-banner"><div className="winner-icon"><Trophy size={22}/></div><div><div className="eyebrow">BEST FORECAST OUTLOOK · NEXT 7 DAYS</div><strong>{comparisonRanked[0].place.name} is currently looking best</strong><p>Average weather score {comparisonRanked[0].averageScore}/100 across the next 7 days. This is a weather-only comparison, not a complete travel recommendation.</p></div><div className="winner-score">{comparisonRanked[0].averageScore}<small>/100</small></div></div>}
+          <div className="comparison-grid">
+            {comparisonRanked.map((item, rank) => { const w = item.weather; const c = w.current; const info = codeInfo(c?.weather_code ?? 0); const Icon = info.Icon; const bestIndex = w.daily.time.slice(0, 7).map((_, i) => scoreDay(w, i)).indexOf(item.bestScore); return <article className={`destination-card ${rank === 0 && comparison.length > 1 ? "top-destination" : ""}`} key={item.place.id}>
+              <div className="destination-card-head"><div><div className="destination-country">{item.place.country || "DESTINATION"}</div><h3>{item.place.name}</h3><p>{item.place.admin1 || item.place.country || "Worldwide"}</p></div><button className="remove-city" title={`Remove ${item.place.name}`} onClick={() => setComparison(current => current.filter(x => x.place.id !== item.place.id))}><X size={16}/></button></div>
+              <div className="destination-current"><div><strong>{temp(c?.temperature_2m ?? 0)}</strong><span>{info.label}</span><small>Feels like {temp(c?.apparent_temperature ?? 0)}</small></div><Icon size={48}/></div>
+              <div className="destination-metrics"><div><small>HUMIDITY</small><strong>{c?.relative_humidity_2m ?? "—"}%</strong></div><div><small>WIND</small><strong>{wind(c?.wind_speed_10m ?? 0)}</strong></div><div><small>RAIN NOW</small><strong>{c?.precipitation ?? 0} mm</strong></div></div>
+              <div className="destination-score-row"><span>7-day weather score</span><strong>{item.averageScore}<small>/100</small></strong></div><div className="score-track"><span style={{ width: `${item.averageScore}%` }}/></div>
+              <div className="best-day-line"><CalendarDays size={14}/><span>Best-looking day: <b>{fmtDay(w.daily.time[bestIndex], { weekday: "short", day: "numeric", month: "short" })}</b></span></div>
+              <div className="mini-week">{w.daily.time.slice(0, 7).map((date, i) => { const DayIcon = codeInfo(w.daily.weather_code[i]).Icon; return <div key={date}><small>{fmtDay(date, { weekday: "short" })}</small><DayIcon size={17}/><b>{temp(w.daily.temperature_2m_max[i])}</b><i>{temp(w.daily.temperature_2m_min[i])}</i></div>; })}</div>
+              {rank === 0 && comparison.length > 1 && <div className="recommended-tag"><Trophy size={12}/> BEST OUTLOOK</div>}
+            </article>; })}
+          </div>
+          <p className="disclaimer"><AlertCircle size={14}/> Scores are indicative comparisons calculated from the next 7 forecast days using rain probability, rainfall, severe weather, wind and broad temperature comfort thresholds. Forecasts are less certain further out. Check conditions again before booking.</p>
+        </>}
+      </section>}
 
       <footer><a className="brand" href="#"><span className="brand-mark"><CloudSun size={17}/></span> skyroute</a><span>Weather data by Open-Meteo · Built for curious travellers</span><span>Forecasts are guidance, not guarantees.</span></footer>
     </main>
